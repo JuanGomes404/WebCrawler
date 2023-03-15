@@ -53,7 +53,11 @@ namespace WC
 
             countdownEvent.Wait();
 
+             
+
             var lista = listaDeDadosExtraidos.ToArray();
+            JsonResolver jsonResolver = new JsonResolver();
+            jsonResolver.criarArquivoJson(lista);
 
            for(int i = 0; i < lista.Length; i++)
             {
