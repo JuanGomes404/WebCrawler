@@ -20,10 +20,10 @@ namespace WC
             
             var documentHTML = htmlWeb.Load(url + pageInicio.ToString());
 
+            var elements = documentHTML.DocumentNode.SelectNodes("//*[@id='content']/div/div/div[1]/div/table/tbody/tr[position()>1]");
 
             for (int page = pageInicio; page <= pageFim; page++) {
                
-                var elements = documentHTML.DocumentNode.SelectNodes("//*[@id='content']/div/div/div[1]/div/table/tbody/tr[position()>1]");
 
                 foreach (var element in elements)
                 {
