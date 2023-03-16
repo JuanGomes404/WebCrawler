@@ -13,6 +13,6 @@ namespace WC
         public string COUNTRY { get; set; } 
         public string PROTOCOL { get; set; } 
 
-        
+       
     }
 }

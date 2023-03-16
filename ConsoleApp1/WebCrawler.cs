@@ -12,7 +12,8 @@ namespace WC
     public class WebCrawler
     {
         CountdownEvent countdownEvent = new CountdownEvent(3);
-        ConcurrentBag<DadosExtraidos> listaDeDadosExtraidos = new ConcurrentBag<DadosExtraidos>();
+        DadosGerais dadosGerais = new DadosGerais();
+        
         private void extrairDados(string url, int pageInicio, int pageFim)
         {
             HtmlWeb htmlWeb = new HtmlWeb();
@@ -31,15 +32,63 @@ namespace WC
                         IP_ADRESS = element.SelectSingleNode("td[2]").InnerText,
                         PORT = element.SelectSingleNode("td[3]").InnerText,
                         COUNTRY = element.SelectSingleNode("td[4]").InnerText,
-                        PROTOCOL = element.SelectSingleNode("td[7]").InnerText
+                        PROTOCOL = element.SelectSingleNode("td[7]").InnerText,
+                        
                     };
-                    listaDeDadosExtraidos.Add(dados);
+                    dadosGerais.listaDados.Add(dados);
+                    dadosGerais.quantidade_linhas_extraidas++;
                 }
-                string pageString = page.ToString();
-                documentHTML = htmlWeb.Load(url + pageString);
                 
+                string pageString = page.ToString();
+                string novaUrl = url + pageString;
+                baixarPaginaHTML(novaUrl, page);
+                documentHTML = htmlWeb.Load(url + pageString);
+                dadosGerais.quantidade_paginas++;
             }
             countdownEvent.Signal();
+        }
+        public async void baixarPaginaHTML(string url, int numPage)
+        {
+            string fileName = "pagina" + numPage.ToString() + "_extraida.html";
+            string folderName = "Paginas extraidas";
+            string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), folderName);
+
+            string filePath = Path.Combine(folderPath, fileName);
+
+            using (var httpClient = new HttpClient())
+            {
+                try
+                {
+                    if (!Directory.Exists(folderPath))
+                    {
+                        Directory.CreateDirectory(folderPath);
+                    }
+
+                    HttpResponseMessage response = await httpClient.GetAsync(url);
+
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        using (var stream = await response.Content.ReadAsStreamAsync())
+                        {
+                            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                            {
+                                await stream.CopyToAsync(fileStream);
+                            }
+                        }
+
+                        Console.WriteLine($"A página HTML foi baixada e salva em {filePath}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Falha ao baixar a página HTML. Código de status: {response.StatusCode}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Falha ao baixar a página HTML. Erro: {ex.Message}");
+                }
+            }
         }
         public void criarThreadDeExtracao()
         {   
@@ -53,23 +102,11 @@ namespace WC
 
             countdownEvent.Wait();
 
-             
-
-            var lista = listaDeDadosExtraidos.ToArray();
+           
             JsonResolver jsonResolver = new JsonResolver();
-            jsonResolver.criarArquivoJson(lista);
+            jsonResolver.criarArquivoJson(dadosGerais);
 
-           for(int i = 0; i < lista.Length; i++)
-            {
-                Console.WriteLine("PORT: " + lista[i].PORT);
-                Console.WriteLine("PROTOCOL: " + lista[i].PROTOCOL);
-                Console.WriteLine("COUNTRY: " + lista[i].COUNTRY);
-                Console.WriteLine("IP ADRESS: " + lista[i].IP_ADRESS);
-
-                Console.WriteLine("\n\n\n");
-
-            }
-
+         
         }
 
     }
