@@ -14,8 +14,9 @@ namespace WC
         public async void criarArquivoJson(DadosGerais data)
         {
             DadosExtraidos[] listaDados = data.listaDados.ToArray();
-
             data.listaDadosArray = listaDados;
+            data.quantidade_linhas_extraidas = data.listaDadosArray.Length;
+
             string json = JsonSerializer.Serialize(data);
             
             File.WriteAllText(@"C:\path.json", json);

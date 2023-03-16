@@ -36,7 +36,7 @@ namespace WC
                         
                     };
                     dadosGerais.listaDados.Add(dados);
-                    dadosGerais.quantidade_linhas_extraidas++;
+                    
                 }
                 
                 string pageString = page.ToString();
@@ -102,7 +102,7 @@ namespace WC
 
             countdownEvent.Wait();
 
-           
+            
             JsonResolver jsonResolver = new JsonResolver();
             jsonResolver.criarArquivoJson(dadosGerais);
 
