@@ -21,9 +21,9 @@ namespace WC
 
                 using (var command = new MySqlCommand(sqlQuery, connection))
                 {
-
                     command.Parameters.AddWithValue("@dataInicioExec", dados.converterFormato(dados.dataInicio));
-                    command.Parameters.AddWithValue("@dataTerminoExec", dados.converterFormato(dados.dataFim));
+                    
+                    command.Parameters.AddWithValue("@dataTerminoExec", dados.converterFormato(dados.dataFim = DateTime.Now));
                     command.Parameters.AddWithValue("@qntPaginas", dados.quantidade_paginas);
                     command.Parameters.AddWithValue("@qntLinhasExtraidas", dados.quantidade_linhas_extraidas);
                     command.Parameters.AddWithValue("@arquivoJson", dados.json);
