@@ -10,16 +10,17 @@ namespace WC
 {
     public class JsonResolver
     {
-        
         public async void criarArquivoJson(DadosGerais data)
         {
             DadosExtraidos[] listaDados = data.listaDados.ToArray();
             data.listaDadosArray = listaDados;
             data.quantidade_linhas_extraidas = data.listaDadosArray.Length;
-
+            data.dataFim = DateTime.Now;
             string json = JsonSerializer.Serialize(data);
-            
+            data.json = json;
             File.WriteAllText(@"C:\path.json", json);
+
+            
         }
 
     }

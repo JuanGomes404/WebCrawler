@@ -90,8 +90,12 @@ namespace WC
                 }
             }
         }
-        public void criarThreadDeExtracao()
-        {   
+        public DadosGerais extrairDados()
+        {
+            dadosGerais.dataInicio = DateTime.Now;
+            Console.WriteLine("A execução começou as: " + dadosGerais.dataInicio);
+
+
             Thread t1 = new Thread(() => extrairDados("https://proxyservers.pro/proxy/list/order/updated/order_dir/desc/page/", 1, 9));
             Thread t2 = new Thread(() => extrairDados("https://proxyservers.pro/proxy/list/order/updated/order_dir/desc/page/", 10, 19));
             Thread t3 = new Thread(() => extrairDados("https://proxyservers.pro/proxy/list/order/updated/order_dir/desc/page/", 20, 27));
@@ -105,8 +109,9 @@ namespace WC
             
             JsonResolver jsonResolver = new JsonResolver();
             jsonResolver.criarArquivoJson(dadosGerais);
+           
 
-         
+            return dadosGerais;
         }
 
     }
